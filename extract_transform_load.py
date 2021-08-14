@@ -84,7 +84,7 @@ def create_tables(df):
     password = "Qwerty12!"
 
     stations.write \
-        .format("com.microsoft.sqlserver.jdbc.spark") \
+        .format("jdbc") \
         .mode("overwrite") \
         .option("url", url) \
         .option("dbtable", stations_table) \
@@ -94,7 +94,7 @@ def create_tables(df):
 
     table_name = "DATA"
     df.write \
-        .format("com.microsoft.sqlserver.jdbc.spark") \
+        .format("jdbc") \
         .mode("overwrite") \
         .option("url", url) \
         .option("dbtable", table_name) \

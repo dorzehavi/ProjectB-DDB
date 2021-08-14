@@ -1,3 +1,29 @@
+import pyodbc
+import pandas as pd
+import findspark
+findspark.init()
+from pyspark.sql import SparkSession
+import pyspark.sql.functions as F
+from pyspark import SparkFiles
+import os
+from pyspark.sql.types import *
+
+def init_spark(app_name: str):
+  spark = SparkSession.builder.appName(app_name).getOrCreate()
+  sc = spark.sparkContext
+  return spark, sc
+
+os.environ['PYSPARK_SUBMIT_ARGS'] = "--packages=org.apache.spark:spark-sql-kafka-0-10_2.11:2.4.4 pyspark-shell"
+
+spark, sc = init_spark('demo')
+
+os.environ['PYSPARK_SUBMIT_ARGS'] = "--packages=org.apache.spark:spark-sql-kafka-0-10_2.11:2.4.4, " \
+                                    "com.microsoft.azure:spark-mssql-connector_2.11:1.1.0 pyspark-shell"
+
+os.environ[
+    'PYSPARK_SUBMIT_ARGS'] = "--packages=org.apache.spark:spark-sql-kafka-0-10_2.12:3.1.1," \
+                             "com.microsoft.azure:spark-mssql-connector_2.12:1.1.0 pyspark-shell"
+
 def fragmentation_data_analysis(df):  # TODO: df sholud be the table DATA from the sql server
 
 
