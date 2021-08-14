@@ -24,12 +24,22 @@ os.environ[
     'PYSPARK_SUBMIT_ARGS'] = "--packages=org.apache.spark:spark-sql-kafka-0-10_2.12:3.1.1," \
                              "com.microsoft.azure:spark-mssql-connector_2.12:1.1.0 pyspark-shell"
 
-def fragmentation_data_analysis(df):  # TODO: df sholud be the table DATA from the sql server
+def fragmentation_data_analysis():
 
-
-    # TODO separate to different file
-    # temporal:
+    server_name = "jdbc:sqlserver://technionddscourse.database.windows.net:1433"
+    database_name = "dor0zehavi"
+    url = server_name + ";" + "databaseName=" + database_name + ";"
+    username = "dor0zehavi"
+    password = "Qwerty12!"
+    table_name = "DATA"
+    df = spark.read \
+        .format("jdbc") \
+        .option("url", url) \
+        .option("dbtable", table_name) \
+        .option("user", username) \
+        .option("password", password).load()
     df_PRCP = df.filter(df['Variable'] == 'PRCP')
+    # temporal:
     winter_df = df_PRCP.filter(
         (df_PRCP["Date"][4:6] == "12") | (df_PRCP["Date"][4:6] == "01") | (df_PRCP["Date"][4:6] == "02"))
     spring_df = df_PRCP.filter(

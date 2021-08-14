@@ -49,7 +49,7 @@
     </schema>
     <schema id="14" parent="2" name="dbo">
       <ObjectId>1</ObjectId>
-      <IntrospectionTimestamp>2021-08-14.19:21:44.293</IntrospectionTimestamp>
+      <IntrospectionTimestamp>2021-08-14.20:56:07.170</IntrospectionTimestamp>
       <Current>1</Current>
     </schema>
     <schema id="15" parent="2" name="guest">
@@ -140,47 +140,56 @@
       <Type>database-role</Type>
       <AuthType>none</AuthType>
     </role>
-    <table id="32" parent="14" name="Locks">
+    <table id="32" parent="14" name="DATA">
+      <ObjectId>734625660</ObjectId>
+      <CreatedTimestamp>2021-08-14.20:56:02.780</CreatedTimestamp>
+      <ModifiedTimestamp>2021-08-14.20:56:02.780</ModifiedTimestamp>
+    </table>
+    <table id="33" parent="14" name="Locks">
       <ObjectId>1778105375</ObjectId>
       <CreatedTimestamp>2021-06-08.14:15:39.990</CreatedTimestamp>
       <ModifiedTimestamp>2021-06-08.14:15:39.990</ModifiedTimestamp>
     </table>
-    <table id="33" parent="14" name="Log">
+    <table id="34" parent="14" name="Log">
       <ObjectId>1698105090</ObjectId>
       <CreatedTimestamp>2021-06-08.14:15:39.660</CreatedTimestamp>
       <ModifiedTimestamp>2021-06-08.14:15:39.660</ModifiedTimestamp>
     </table>
-    <table id="34" parent="14" name="ProductsInventory">
+    <table id="35" parent="14" name="ProductsInventory">
       <ObjectId>1586104691</ObjectId>
       <CreatedTimestamp>2021-06-08.14:15:38.767</CreatedTimestamp>
       <ModifiedTimestamp>2021-06-08.14:15:39.993</ModifiedTimestamp>
     </table>
-    <table id="35" parent="14" name="ProductsOrdered">
+    <table id="36" parent="14" name="ProductsOrdered">
       <ObjectId>1634104862</ObjectId>
       <CreatedTimestamp>2021-06-08.14:15:39.020</CreatedTimestamp>
       <ModifiedTimestamp>2021-06-08.14:15:39.020</ModifiedTimestamp>
     </table>
-    <table id="36" parent="14" name="Stations">
-      <ObjectId>654625375</ObjectId>
-      <CreatedTimestamp>2021-08-14.19:16:33.477</CreatedTimestamp>
-      <ModifiedTimestamp>2021-08-14.19:16:33.477</ModifiedTimestamp>
+    <table id="37" parent="14" name="Stations">
+      <ObjectId>718625603</ObjectId>
+      <CreatedTimestamp>2021-08-14.20:52:21.410</CreatedTimestamp>
+      <ModifiedTimestamp>2021-08-14.20:52:21.410</ModifiedTimestamp>
     </table>
-    <column id="37" parent="32" name="transactionID">
+    <column id="38" parent="32" name="sdf">
+      <Position>1</Position>
+      <DataType>int|0s</DataType>
+    </column>
+    <column id="39" parent="33" name="transactionID">
       <Position>1</Position>
       <DataType>varchar(30 char)|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="38" parent="32" name="productID">
+    <column id="40" parent="33" name="productID">
       <Position>2</Position>
       <DataType>int|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="39" parent="32" name="lockType">
+    <column id="41" parent="33" name="lockType">
       <Position>3</Position>
       <DataType>varchar(10 char)|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <index id="40" parent="32" name="PK__Locks__2D32942EC34792C5">
+    <index id="42" parent="33" name="PK__Locks__2D32942EC34792C5">
       <Position>1</Position>
       <NameSurrogate>1</NameSurrogate>
       <ColNames>transactionID
@@ -189,7 +198,7 @@ lockType</ColNames>
       <Clustering>1</Clustering>
       <Unique>1</Unique>
     </index>
-    <key id="41" parent="32" name="PK__Locks__2D32942EC34792C5">
+    <key id="43" parent="33" name="PK__Locks__2D32942EC34792C5">
       <ObjectId>1794105432</ObjectId>
       <NameSurrogate>1</NameSurrogate>
       <CreatedTimestamp>2021-06-08.14:15:39.990</CreatedTimestamp>
@@ -200,7 +209,7 @@ lockType</ColNames>
       <UnderlyingIndexName>PK__Locks__2D32942EC34792C5</UnderlyingIndexName>
       <Primary>1</Primary>
     </key>
-    <foreign-key id="42" parent="32" name="FK__Locks__productID__6CD828CA">
+    <foreign-key id="44" parent="33" name="FK__Locks__productID__6CD828CA">
       <ObjectId>1826105546</ObjectId>
       <NameSurrogate>1</NameSurrogate>
       <CreatedTimestamp>2021-06-08.14:15:39.993</CreatedTimestamp>
@@ -211,7 +220,7 @@ lockType</ColNames>
       <RefKeyName>PK__Products__2D10D14ADF1D5F78</RefKeyName>
       <RefColNames>productID</RefColNames>
     </foreign-key>
-    <check id="43" parent="32" name="CK__Locks__lockType__6BE40491">
+    <check id="45" parent="33" name="CK__Locks__lockType__6BE40491">
       <ObjectId>1810105489</ObjectId>
       <NameSurrogate>1</NameSurrogate>
       <CreatedTimestamp>2021-06-08.14:15:39.993</CreatedTimestamp>
@@ -219,46 +228,46 @@ lockType</ColNames>
       <ColNames>lockType</ColNames>
       <Predicate>[lockType]=&apos;write&apos; OR [lockType]=&apos;read&apos;</Predicate>
     </check>
-    <column id="44" parent="33" name="rowID">
+    <column id="46" parent="34" name="rowID">
       <Position>1</Position>
       <SequenceIdentity>1(10792)</SequenceIdentity>
       <DataType>int|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="45" parent="33" name="timestamp">
+    <column id="47" parent="34" name="timestamp">
       <Position>2</Position>
       <DataType>datetime|0s</DataType>
     </column>
-    <column id="46" parent="33" name="relation">
+    <column id="48" parent="34" name="relation">
       <Position>3</Position>
       <DataType>varchar(20 char)|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="47" parent="33" name="transactionID">
+    <column id="49" parent="34" name="transactionID">
       <Position>4</Position>
       <DataType>varchar(30 char)|0s</DataType>
     </column>
-    <column id="48" parent="33" name="productID">
+    <column id="50" parent="34" name="productID">
       <Position>5</Position>
       <DataType>int|0s</DataType>
     </column>
-    <column id="49" parent="33" name="action">
+    <column id="51" parent="34" name="action">
       <Position>6</Position>
       <DataType>varchar(20 char)|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="50" parent="33" name="record">
+    <column id="52" parent="34" name="record">
       <Position>7</Position>
       <DataType>varchar(2500 char)|0s</DataType>
     </column>
-    <index id="51" parent="33" name="PK__Log__4B58DA60145EE713">
+    <index id="53" parent="34" name="PK__Log__4B58DA60145EE713">
       <Position>1</Position>
       <NameSurrogate>1</NameSurrogate>
       <ColNames>rowID</ColNames>
       <Clustering>1</Clustering>
       <Unique>1</Unique>
     </index>
-    <key id="52" parent="33" name="PK__Log__4B58DA60145EE713">
+    <key id="54" parent="34" name="PK__Log__4B58DA60145EE713">
       <ObjectId>1714105147</ObjectId>
       <NameSurrogate>1</NameSurrogate>
       <CreatedTimestamp>2021-06-08.14:15:39.663</CreatedTimestamp>
@@ -267,7 +276,7 @@ lockType</ColNames>
       <UnderlyingIndexName>PK__Log__4B58DA60145EE713</UnderlyingIndexName>
       <Primary>1</Primary>
     </key>
-    <foreign-key id="53" parent="33" name="FK__Log__productID__690797E6">
+    <foreign-key id="55" parent="34" name="FK__Log__productID__690797E6">
       <ObjectId>1762105318</ObjectId>
       <NameSurrogate>1</NameSurrogate>
       <CreatedTimestamp>2021-06-08.14:15:39.667</CreatedTimestamp>
@@ -278,7 +287,7 @@ lockType</ColNames>
       <RefKeyName>PK__Products__2D10D14ADF1D5F78</RefKeyName>
       <RefColNames>productID</RefColNames>
     </foreign-key>
-    <check id="54" parent="33" name="CK__Log__action__681373AD">
+    <check id="56" parent="34" name="CK__Log__action__681373AD">
       <ObjectId>1746105261</ObjectId>
       <NameSurrogate>1</NameSurrogate>
       <CreatedTimestamp>2021-06-08.14:15:39.663</CreatedTimestamp>
@@ -286,7 +295,7 @@ lockType</ColNames>
       <ColNames>action</ColNames>
       <Predicate>[action]=&apos;read&apos; OR [action]=&apos;update&apos; OR [action]=&apos;delete&apos; OR [action]=&apos;insert&apos;</Predicate>
     </check>
-    <check id="55" parent="33" name="CK__Log__relation__671F4F74">
+    <check id="57" parent="34" name="CK__Log__relation__671F4F74">
       <ObjectId>1730105204</ObjectId>
       <NameSurrogate>1</NameSurrogate>
       <CreatedTimestamp>2021-06-08.14:15:39.663</CreatedTimestamp>
@@ -294,23 +303,23 @@ lockType</ColNames>
       <ColNames>relation</ColNames>
       <Predicate>[relation]=&apos;Locks&apos; OR [relation]=&apos;ProductsOrdered&apos; OR [relation]=&apos;ProductsInventory&apos;</Predicate>
     </check>
-    <column id="56" parent="34" name="productID">
+    <column id="58" parent="35" name="productID">
       <Position>1</Position>
       <DataType>int|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="57" parent="34" name="inventory">
+    <column id="59" parent="35" name="inventory">
       <Position>2</Position>
       <DataType>int|0s</DataType>
     </column>
-    <index id="58" parent="34" name="PK__Products__2D10D14ADF1D5F78">
+    <index id="60" parent="35" name="PK__Products__2D10D14ADF1D5F78">
       <Position>1</Position>
       <NameSurrogate>1</NameSurrogate>
       <ColNames>productID</ColNames>
       <Clustering>1</Clustering>
       <Unique>1</Unique>
     </index>
-    <key id="59" parent="34" name="PK__Products__2D10D14ADF1D5F78">
+    <key id="61" parent="35" name="PK__Products__2D10D14ADF1D5F78">
       <ObjectId>1602104748</ObjectId>
       <NameSurrogate>1</NameSurrogate>
       <CreatedTimestamp>2021-06-08.14:15:38.770</CreatedTimestamp>
@@ -319,7 +328,7 @@ lockType</ColNames>
       <UnderlyingIndexName>PK__Products__2D10D14ADF1D5F78</UnderlyingIndexName>
       <Primary>1</Primary>
     </key>
-    <check id="60" parent="34" name="CK__ProductsI__inven__607251E5">
+    <check id="62" parent="35" name="CK__ProductsI__inven__607251E5">
       <ObjectId>1618104805</ObjectId>
       <NameSurrogate>1</NameSurrogate>
       <CreatedTimestamp>2021-06-08.14:15:38.770</CreatedTimestamp>
@@ -327,21 +336,21 @@ lockType</ColNames>
       <ColNames>inventory</ColNames>
       <Predicate>[inventory]&gt;=0</Predicate>
     </check>
-    <column id="61" parent="35" name="transactionID">
+    <column id="63" parent="36" name="transactionID">
       <Position>1</Position>
       <DataType>varchar(30 char)|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="62" parent="35" name="productID">
+    <column id="64" parent="36" name="productID">
       <Position>2</Position>
       <DataType>int|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="63" parent="35" name="amount">
+    <column id="65" parent="36" name="amount">
       <Position>3</Position>
       <DataType>int|0s</DataType>
     </column>
-    <index id="64" parent="35" name="PK__Products__2986C246FA18FF32">
+    <index id="66" parent="36" name="PK__Products__2986C246FA18FF32">
       <Position>1</Position>
       <NameSurrogate>1</NameSurrogate>
       <ColNames>transactionID
@@ -349,7 +358,7 @@ productID</ColNames>
       <Clustering>1</Clustering>
       <Unique>1</Unique>
     </index>
-    <key id="65" parent="35" name="PK__Products__2986C246FA18FF32">
+    <key id="67" parent="36" name="PK__Products__2986C246FA18FF32">
       <ObjectId>1650104919</ObjectId>
       <NameSurrogate>1</NameSurrogate>
       <CreatedTimestamp>2021-06-08.14:15:39.020</CreatedTimestamp>
@@ -359,7 +368,7 @@ productID</ColNames>
       <UnderlyingIndexName>PK__Products__2986C246FA18FF32</UnderlyingIndexName>
       <Primary>1</Primary>
     </key>
-    <foreign-key id="66" parent="35" name="FK__ProductsO__produ__634EBE90">
+    <foreign-key id="68" parent="36" name="FK__ProductsO__produ__634EBE90">
       <ObjectId>1666104976</ObjectId>
       <NameSurrogate>1</NameSurrogate>
       <CreatedTimestamp>2021-06-08.14:15:39.023</CreatedTimestamp>
@@ -370,7 +379,7 @@ productID</ColNames>
       <RefKeyName>PK__Products__2D10D14ADF1D5F78</RefKeyName>
       <RefColNames>productID</RefColNames>
     </foreign-key>
-    <check id="67" parent="35" name="CK__ProductsO__amoun__6442E2C9">
+    <check id="69" parent="36" name="CK__ProductsO__amoun__6442E2C9">
       <ObjectId>1682105033</ObjectId>
       <NameSurrogate>1</NameSurrogate>
       <CreatedTimestamp>2021-06-08.14:15:39.023</CreatedTimestamp>
@@ -378,38 +387,21 @@ productID</ColNames>
       <ColNames>amount</ColNames>
       <Predicate>[amount]&gt;=1</Predicate>
     </check>
-    <column id="68" parent="36" name="StationId">
+    <column id="70" parent="37" name="StationId">
       <Position>1</Position>
-      <DataType>varchar(255 char)|0s</DataType>
-      <NotNull>1</NotNull>
+      <DataType>nvarchar(max)|0s</DataType>
     </column>
-    <column id="69" parent="36" name="latitude">
+    <column id="71" parent="37" name="latitude">
       <Position>2</Position>
-      <DataType>varchar(255 char)|0s</DataType>
+      <DataType>nvarchar(max)|0s</DataType>
     </column>
-    <column id="70" parent="36" name="longitude">
+    <column id="72" parent="37" name="longitude">
       <Position>3</Position>
-      <DataType>varchar(255 char)|0s</DataType>
+      <DataType>nvarchar(max)|0s</DataType>
     </column>
-    <column id="71" parent="36" name="elevation">
+    <column id="73" parent="37" name="elevation">
       <Position>4</Position>
-      <DataType>varchar(255 char)|0s</DataType>
+      <DataType>nvarchar(max)|0s</DataType>
     </column>
-    <index id="72" parent="36" name="PK__Stations__E0D8A6BDC711EEC6">
-      <Position>1</Position>
-      <NameSurrogate>1</NameSurrogate>
-      <ColNames>StationId</ColNames>
-      <Clustering>1</Clustering>
-      <Unique>1</Unique>
-    </index>
-    <key id="73" parent="36" name="PK__Stations__E0D8A6BDC711EEC6">
-      <ObjectId>670625432</ObjectId>
-      <NameSurrogate>1</NameSurrogate>
-      <CreatedTimestamp>2021-08-14.19:16:33.490</CreatedTimestamp>
-      <ModifiedTimestamp>2021-08-14.19:16:33.490</ModifiedTimestamp>
-      <ColNames>StationId</ColNames>
-      <UnderlyingIndexName>PK__Stations__E0D8A6BDC711EEC6</UnderlyingIndexName>
-      <Primary>1</Primary>
-    </key>
   </database-model>
 </dataSource>

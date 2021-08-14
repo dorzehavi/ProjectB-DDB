@@ -24,24 +24,20 @@ os.environ[
     'PYSPARK_SUBMIT_ARGS'] = "--packages=org.apache.spark:spark-sql-kafka-0-10_2.12:3.1.1," \
                              "com.microsoft.azure:spark-mssql-connector_2.12:1.1.0 pyspark-shell"
 
-
-print(spark.version)
-print('CPUs:', os.cpu_count())
-
 kafka_server = 'dds2020s-kafka.eastus.cloudapp.azure.com:9092'
 
 def get_topics():
     """
     :return: string\list of all the countries code
     """
-    stations = spark.read.format("txt").text("ghcnd-stations.txt", wholetext=True)
+    stations = sc.textFile("ghcnd-stations.txt")
     countries = set()
     tmp = ""
-    for station in stations:
+    for station in stations.collect():
         if station[0:2] not in countries:
             countries.add(station[0:2])
     for country in list(countries):
-        tmp = tmp + f"{country},"
+        tmp = tmp + str(country) + ","
     return tmp[:len(tmp)-1]
 
 
@@ -105,8 +101,8 @@ def create_tables(df):
 
 
 if __name__ == '__main__':
+    print(get_topics())
     print()
-
     # Define the schema of the data:
     noaa_schema = StructType([StructField('StationId', StringType(), False),
                               StructField('Date', IntegerType(), False),
