@@ -6,7 +6,6 @@ from pyspark.sql import SparkSession
 import pyspark.sql.functions as F
 from pyspark import SparkFiles
 import os
-from pyspark.sql.types import *
 
 
 def init_spark(app_name: str):
@@ -26,8 +25,16 @@ os.environ[
     'PYSPARK_SUBMIT_ARGS'] = "--packages=org.apache.spark:spark-sql-kafka-0-10_2.12:3.1.1," \
                              "com.microsoft.azure:spark-mssql-connector_2.12:1.1.0 pyspark-shell"
 
+from pyspark.sql.types import *
 kafka_server = 'dds2020s-kafka.eastus.cloudapp.azure.com:9092'
 
+server_name = "jdbc:sqlserver://technionddscourse.database.windows.net:1433"
+database_name = "dor0zehavi"
+url = server_name + ";" + "databaseName=" + database_name + ";"
+stations_table = "Stations"
+inventory_table = "Inventory"
+username = "dor0zehavi"
+password = "Qwerty12!"
 
 def get_topics():
     """
@@ -44,10 +51,9 @@ def get_topics():
     return tmp[:len(tmp) - 1]
 
 
-def create_tables(df):
+def create_stations_table():
     """
-    creating the SQL tables in the Azure sql server
-    :param df:
+    creating the stations table in the Azure sql server
     :return:
     """
 
@@ -68,13 +74,7 @@ def create_tables(df):
     for col in ['latitude', 'longitude', 'elevation']:
         stations = stations.withColumn(col, stations[col].cast("float"))
 
-    server_name = "jdbc:sqlserver://technionddscourse.database.windows.net:1433"
-    database_name = "dor0zehavi"
-    url = server_name + ";" + "databaseName=" + database_name + ";"
-    stations_table = "Stations"
-    inventory_table = "Inventory"
-    username = "dor0zehavi"
-    password = "Qwerty12!"
+
     print()
     stations.write \
         .format("jdbc") \
@@ -84,17 +84,7 @@ def create_tables(df):
         .option("user", username) \
         .option("password", password) \
         .save()
-
-    table_name = "DATA"
-    df.write \
-        .format("jdbc") \
-        .mode("overwrite") \
-        .option("url", url) \
-        .option("dbtable", table_name) \
-        .option("user", username) \
-        .option("password", password) \
-        .save()
-
+    return stations
 
 if __name__ == '__main__':
     print()
@@ -110,7 +100,7 @@ if __name__ == '__main__':
 
     kafka_raw_df = spark.read.format("kafka") \
         .option("kafka.bootstrap.servers", kafka_server) \
-        .option("subscribe", "US") \
+        .option("subscribe", get_topics()) \
         .option("startingOffsets", "earliest") \
         .load()
     # TODO: notice i have subscribed only to USA, its just for quick working- need to sub. to more topics (get_topics)
@@ -128,5 +118,15 @@ if __name__ == '__main__':
                               (kafka_df['Variable'] == 'DWPR') | (kafka_df['Variable'] == 'MDPR') |
                               (kafka_df['Variable'] == 'MDSF') | (kafka_df['Variable'] == 'EVAP'))
     vars_flags_df = vars_df.filter("Q_flag is null").filter('M_Flag is null').filter('S_Flag is not null')
-    create_tables(vars_flags_df)
+    stations = create_stations_table()
+    df = vars_flags_df.join(stations, vars_flags_df.StationId == stations.StationId, "inner")
+    df.write \
+        .format("jdbc") \
+        .mode("overwrite") \
+        .option("url", url) \
+        .option("dbtable", "DATA") \
+        .option("user", username) \
+        .option("password", password) \
+        .save()
     print()
+
