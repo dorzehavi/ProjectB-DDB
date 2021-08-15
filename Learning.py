@@ -73,9 +73,15 @@ class Predictor:
         dist_udf = F.udf(create_dist_func(station))
         columns = self.columns.copy()
         columns.remove("StationId")
-        stations_dist_df = self.stations.withColumn("dist", dist_udf(F.array(self.columns)))
-        print()
+        stations_dist_df = self.stations.withColumn("dist",
+                                        dist_udf(F.array(columns)))
+        stations_dist_df = stations_dist_df.orderBy(F.col("dist").asc())
+        closest = stations_dist_df.take(self.k)
+        # TODO filter data by closest stations
+        # TODO filter data by some time unit
+        # TODO average their self.variable results and return
 
+        print()
 
 
 if __name__ == '__main__':
