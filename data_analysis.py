@@ -1,6 +1,41 @@
 import pyodbc
+import matplotlib.pyplot as plt
 import pandas as pd
-import findspark
+#import geopandas as gpd
+
+def connect():
+    conn = pyodbc.connect(
+        DRIVER='{SQL Server};',
+        SERVER='technionddscourse.database.windows.net;',
+        DATABASE='dor0zehavi',
+        UID='dor0zehavi',
+        PWD='Qwerty12!')
+    cursor = conn.cursor()
+    return cursor, conn
+
+if __name__ == '__main__':
+    cursor, conn = connect()
+    sql = "select count(*) from BIG_DATA where PRCP IS NOT NULL and (MONTH(BIG_DATA.DATE)>=9 and MONTH(BIG_DATA.DATE)<=11) and PRCP>1000"
+    fall = list(cursor.execute(sql))[0][0]
+    sql = "select count(*) from BIG_DATA where PRCP IS NOT NULL and (MONTH(BIG_DATA.DATE)=12 or MONTH(BIG_DATA.DATE)<=2) and PRCP>1000"
+    winter = list(cursor.execute(sql))[0][0]
+    sql = "select count(*) from BIG_DATA where PRCP IS NOT NULL and (MONTH(BIG_DATA.DATE)>=3 and (MONTH(BIG_DATA.DATE)<=5) and PRCP>1000"
+    spring = list(cursor.execute(sql))[0][0]
+    sql = "select count(*) from BIG_DATA where PRCP IS NOT NULL and (MONTH(BIG_DATA.DATE)>=6 and (MONTH(BIG_DATA.DATE)<=8) and PRCP>1000"
+    summer = list(cursor.execute(sql))[0][0]
+
+    seasons = ['Fall', 'Winter', 'Spring', 'Summer']
+    vals = [fall, winter, spring, summer]
+
+    font1 = {'family': 'serif', 'color': 'blue', 'size': 20}
+    font2 = {'family': 'serif', 'color': 'darkred', 'size': 15}
+    plt.figure(figsize=(14, 10))
+    plt.xlabel("Season of the year", fontdict=font2)
+    plt.ylabel("No. of observation over 1000 mm prcp", fontdict=font2)
+    plt.title("observation with over 1000 mm prcp in each season of the year", fontdict=font1)
+    plt.bar(seasons, vals, color='maroon', width=0.4)
+
+"""import findspark
 findspark.init()
 from pyspark.sql import SparkSession
 import pyspark.sql.functions as F
@@ -59,7 +94,7 @@ def fragmentation_data_analysis():
 
     stations = pd.DataFrame(SQL_Query, columns=['StationId', 'latitude', 'longitude', 'elevation'])
     # spatial:
-    stations_data_df = df_PRCP.join(stations, df_PRCP.StationId == stations.StationId, 'inner')
+    stations_data_df = df_PRCP.join(stations, ["StationId"], 'inner')
     Q1_df = stations_data_df.filter(stations_data_df["latitude"] >= 0 & stations_data_df["longitude"] > 0)
     Q2_df = stations_data_df.filter(stations_data_df["latitude"] >= 0 & stations_data_df["longitude"] < 0)
     Q3_df = stations_data_df.filter(stations_data_df["latitude"] <= 0 & stations_data_df["longitude"] < 0)
@@ -83,4 +118,4 @@ def fragmentation_data_analysis():
             (quarters[i]["Date"][4:6] == "09") | (quarters[i]["Date"][4:6] == "10") | (quarters[i]["Date"][4:6] == "11")))
         quarters_seasons.append(quarter_season)
 
-        # TODO: upload all these df to the Azure sql server- for the insight
+        """
