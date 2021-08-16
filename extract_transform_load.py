@@ -78,9 +78,11 @@ def create_empty_table():
                          StructField('longitude', IntegerType(), False),
                          StructField('elevation', IntegerType(), False),
                          StructField('Date', DateType(), False),
-                         StructField('Variable', StringType(), False),
-                         StructField('Value', IntegerType(), False),
-                         StructField('ObsTime', StringType(), True)])
+                         StructField('PRCP', IntegerType(), True),
+                         StructField('SNOW', IntegerType(), True),
+                         StructField('SNWD', IntegerType(), True),
+                         StructField('TMAX', IntegerType(), True),
+                         StructField('TMIN', IntegerType(), True)])
     empty_df = spark.createDataFrame([], schema)
     empty_df.write \
         .format("jdbc") \
@@ -123,11 +125,12 @@ def create_stations_table():
 def upload_batch(batch_df, batch_id):
     print("processing batch:", batch_id)
     stations = create_stations_table()
+    batch_df = process_df(batch_df)
     df = stations.join(batch_df, ["StationId"], "inner")
-    df = process_df(df)
+    print()
     df.write \
         .format("jdbc") \
-        .mode("overwrite") \
+        .mode("append") \
         .option("url", url) \
         .option("dbtable", TABLE_NAME) \
         .option("user", username) \
@@ -141,12 +144,12 @@ def process_df(df):
     for field in fields:
         fields_dfs_dict[field] = df.select("*")\
             .where(df["Variable"] == field)\
-            .drop("Variable").drop("Value")\
-            .withColumn(field, df["Value"])
-    for i in range(4):
-        fields_dfs_dict[fields[4]] = fields_dfs_dict[fields[4]]\
-            .join(fields_dfs_dict[fields[i]], ["StationId", "Date"], "inner")
-    return fields_dfs_dict[fields[4]]
+            .drop("Variable")\
+            .withColumn(field, df["Value"]).drop("Value")
+    for i in range(1,5):
+        fields_dfs_dict[fields[0]] = fields_dfs_dict[fields[0]]\
+            .join(fields_dfs_dict[fields[i]], ["StationId", "Date"], "left")
+    return fields_dfs_dict[fields[0]]
 
 if __name__ == '__main__':
     print()
@@ -159,7 +162,7 @@ if __name__ == '__main__':
                               StructField('Q_Flag', StringType(), True),
                               StructField('S_Flag', StringType(), True),
                               StructField('ObsTime', StringType(), True)])
-    #create_empty_table()
+    create_empty_table()
 
     kafka_raw_df = spark.readStream.format("kafka") \
         .option("kafka.bootstrap.servers", kafka_server) \
