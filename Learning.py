@@ -1,13 +1,11 @@
-import numpy as np
-import pandas as pd
-import pyodbc
 import findspark
 findspark.init()
 from pyspark.sql import SparkSession
-import pyspark.sql.functions as F
-from pyspark import SparkFiles
 import os
-from pyspark.sql.types import *
+import time
+from pyspark.ml.feature import VectorAssembler
+from pyspark.ml.regression import RandomForestRegressor
+from pyspark.ml.evaluation import RegressionEvaluator
 
 
 def init_spark(app_name: str):
@@ -43,53 +41,35 @@ def load(table_name):
     return data
 
 
-def dist_metric(station1, station2):
-    """
-    :param station1: station with index access
-    :param station2: station with column access
-    """
-    sum = 0
-    for i, column in enumerate(["latitude", "longitude", "elevation"]):
-        diff = station1[i] - station2[column]
-        sum += diff**2
-    return np.sqrt(sum)
-
-
-def create_dist_func(station):
-    return lambda row: dist_metric(row, station)
-
-
-class Predictor:
-    def __init__(self, k, variable):
-        self.k = k
-        self.variable = variable
-        self.data = load("DATA")
-        self.stations = load("Stations")
-        for column in ["latitude", "longitude", "elevation"]:
-            self.stations = self.stations.withColumn(column, self.stations[column].cast("float"))
-        self.columns = self.stations.schema.names
-
-    def predict(self, station):
-        dist_udf = F.udf(create_dist_func(station))
-        columns = self.columns.copy()
-        columns.remove("StationId")
-        stations_dist_df = self.stations.withColumn("dist",
-                                        dist_udf(F.array(columns)))
-        stations_dist_df = stations_dist_df.orderBy(F.col("dist").asc())
-        closest = stations_dist_df.take(self.k)
-        # TODO filter data by closest stations
-        # TODO filter data by some time unit
-        # TODO average their self.variable results and return
-
-        print()
+start_load = time.time()
+data_df = load("BIG_DATA_4")
+data_df = data_df.drop("StationId")
+input_cols = data_df.columns
+input_cols.remove("PRCP")
+data_df = data_df.na.drop()
+vector_assembler = VectorAssembler(inputCols=input_cols, outputCol="features")
+df_temp = vector_assembler.transform(data_df)
+data_df = df_temp.drop(*input_cols)
+train_df, test_df = data_df.randomSplit([0.7, 0.3])
+print("Count:", data_df.count())
+finish_load = time.time()
+print("Load time:", finish_load - start_load)
+for num_trees in [15]:  # [5, 10, 15, 20, 25, 30]:
+    start_iter = time.time()
+    rf = RandomForestRegressor(featuresCol="features",
+                               labelCol="PRCP",
+                               numTrees=num_trees)
+    model = rf.fit(train_df)
+    predictions = model.transform(test_df)
+    evaluator = RegressionEvaluator(labelCol="PRCP",
+                                    predictionCol="prediction",
+                                    metricName="rmse")
+    rmse = evaluator.evaluate(predictions)
+    finish_iter = time.time()
+    print("Num Trees:", num_trees)
+    print("RMSE:", rmse)
+    print("Iteration time:", finish_iter - start_iter)
 
 
 if __name__ == '__main__':
-
-    stations = load("Stations")
-    for column in ["latitude", "longitude", "elevation"]:
-        stations = stations.withColumn(column, stations[column].cast("float"))
-    stations = stations.take(5)
-    predictor = Predictor(5, "PRCP")
-    for station in stations:
-        predictor.predict(station)
+    pass
